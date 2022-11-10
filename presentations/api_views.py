@@ -92,6 +92,12 @@ class PresentationDetailEncoder(ModelEncoder):
         "created",
     ]
 
+    def get_extra_data(self, o):
+        return {
+            "status": o.status.name,
+            "conference": o.conference.name,
+        }
+
 
 @require_http_methods(["GET", "DELETE", "PUT"])
 def api_show_presentation(request, id):
@@ -106,11 +112,11 @@ def api_show_presentation(request, id):
     else:
         content = json.loads(request.body)
         try:
-            presentation = Presentation.objects.get(id=content["presentation"])
-            content["presentation"] = presentation
-        except Presentation.DoesNotExist:
+            conference = Conference.objects.get(id=content["conference"])
+            content["conference"] = conference
+        except Conference.DoesNotExist:
             return JsonResponse(
-                {"message": "Invalid presentation id"},
+                {"message": "Invalid conference id"},
                 status=400,
             )
         Presentation.objects.filter(id=id).update(**content)
