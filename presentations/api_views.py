@@ -10,6 +10,8 @@ import json
 
 from events.models import Conference
 
+from .models import Status
+
 """
     Lists the presentation titles and the link to the
     presentation for the specified conference id.
@@ -104,7 +106,9 @@ def api_show_presentation(request, id):
     if request.method == "GET":
         presentation = Presentation.objects.get(id=id)
         return JsonResponse(
-            presentation, encoder=PresentationDetailEncoder, safe=False
+            presentation,
+            encoder=PresentationDetailEncoder,
+            safe=False,
         )
     elif request.method == "DELETE":
         count, _ = Presentation.objects.filter(id=id).delete()
@@ -112,14 +116,19 @@ def api_show_presentation(request, id):
     else:
         content = json.loads(request.body)
         try:
-            conference = Conference.objects.get(id=content["conference"])
-            content["conference"] = conference
-        except Conference.DoesNotExist:
+            if "status" in content:
+                status = Status.objects.get(name=content["status"])
+                content["status"] = status
+        except Status.DoesNotExist:
             return JsonResponse(
-                {"message": "Invalid conference id"},
+                {"message": "Invalid status"},
                 status=400,
             )
+
+        # new code
         Presentation.objects.filter(id=id).update(**content)
+
+        # copied from get detail
         presentation = Presentation.objects.get(id=id)
         return JsonResponse(
             presentation,
