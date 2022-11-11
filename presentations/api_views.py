@@ -66,7 +66,7 @@ def api_list_presentations(request, conference_id):
         presentation = Presentation.create(**content)
         return JsonResponse(
             presentation,
-            encoder=PresentationListEncoder,
+            encoder=PresentationDetailEncoder,
             safe=False,
         )
 

@@ -131,8 +131,9 @@ def api_show_conference(request, id):
     else:
         content = json.loads(request.body)
         try:
-            location = Location.objects.get(id=content["location"])
-            content["location"] = location
+            if "location" in content:
+                location = Location.objects.get(id=content["location"])
+                content["location"] = location
         except Location.DoesNotExist:
             return JsonResponse(
                 {"message": "Invalid location id"},
