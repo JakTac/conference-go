@@ -8,6 +8,14 @@ class ConferenceVO(models.Model):
     name = models.CharField(max_length=200)
 
 
+class AccountVO(models.Model):
+    email = models.EmailField()
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
+    updated = models.DateField(auto_now=True)
+
+
 class Attendee(models.Model):
     """
     The Attendee model represents someone that wants to attend
